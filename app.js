@@ -2,6 +2,7 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 require("console.table");
 
+//connect to database
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -16,7 +17,7 @@ connection.connect(function (err) {
     console.log("Test");
     askQuestions();
 });
-
+// ask user questions of what they would like to do
 function askQuestions() {
     inquirer.prompt([
         {
@@ -34,14 +35,14 @@ function askQuestions() {
         }else if (answers.choice === "add employee") {
             addEmployee();
         }else if (answers.choice === "update employee roles") {
-        updateEmployeeRoles();
-    }else {
+            updateEmployeeRoles();
+        }else {
             console.log("bye!");
             connection.end();
         }
     })
 }
-
+// function that lets user add department
 function addDepartment() {
     inquirer.prompt({
         name: "name",
@@ -55,15 +56,15 @@ function addDepartment() {
     })
 
 }
-
+// lets user add role       
 function addRole() {
     connection.query("SELECT * FROM department", function (err, data) {
         if (err) throw err
 
         let depArr = data.map(function (department) {
             return {
-                name: department.title,
-                value: departmentment.id
+                name: department.name,
+                value: department.id
             }
         })
          inquirer.prompt([
@@ -82,11 +83,11 @@ function addRole() {
                 message: "What is the salary for this role?"
             },
         ]).then(function (response) {
-            connection.query("INSERT INTO crew SET ?", {
-                name: response.name,
-                depname: response.depname,
+            connection.query("INSERT INTO role SET ?", {
+                title: response.title,
+                // depname: response.depname,
                 salary: response.salary,
-                // department_id: answers.depId
+                department_id: response.depId
             }, function (err) {
                 if (err) throw err
                 askQuestions()
@@ -95,7 +96,7 @@ function addRole() {
 
     })
 }
-
+// function that lets user add new employee
 // function addEmployee() {
 //     inquirer.prompt([
 //         {
