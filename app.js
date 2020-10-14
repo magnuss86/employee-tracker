@@ -36,7 +36,14 @@ function askQuestions() {
             addEmployee();
         }else if (answers.choice === "update employee roles") {
             updateEmployeeRoles();
-        }else {
+        }else if (answers.choice === "view department") {
+            viewDepartment();
+        }else if (answers.choice === "view role") {
+            viewRole();
+        }else if (answers.choice === "view employees") {
+            viewEmployees();
+        }
+        else {
             console.log("bye!");
             connection.end();
         }
@@ -97,32 +104,75 @@ function addRole() {
 }
 //function that lets user add new employees to the employee table
 function addEmployee() {
-    inquirer.prompt([
-        {
-        name: "firstName",
-        type: "input",
-        message: "What is your first name?"
-        },
-        {
-        name: "lastName",
-        type: "input",
-        message: "What is your last name?"
-        },
-        {
-        name: "role",
-        type: "input",
-        message: "What is your role?"   
-        },
-        ]).then(function (answers) {
-        connection.query("INSERT INTO employee SET ?", {
-            first_name: answers.firstName,
-            last_name: answers.lastName,
-            role_id: answers.role
-         }, function (err) {
-            if (err) throw err
-            askQuestions();
+    connection.query("SELECT * FROM role", function (err, data) {
+        if (err) throw err
+
+        let roleArr = data.map(function (department) {
+            return {
+                name: department.title,
+                value: department.id
+            }
         })
+         inquirer.prompt([
+            {
+                name: "firstName",
+                type: "input",
+                message: "What is your first name?"
+            }, {
+                name: "lastName",
+                type: "input",
+                message: "What is your lastname?",
+            }, {
+                name: "managerId",
+                type: "confirm",
+                message: "Are they a manager?"
+            },
+            {
+                name: "roleId",
+                type: "list",
+                message: "What is the role of this employee?",
+                choices: roleArr,
+            },
+        ]).then(function (response) {
+            connection.query("INSERT INTO employee SET ?", {
+                first_name: response.firstName,
+                last_name: response.lastName,
+                manager_id: response.managerId,
+                role_id: response.roleId
+            }, function (err) {
+                if (err) throw err
+                askQuestions()
+            })
+        })
+
     })
-
-
 }
+//function view all departments
+function viewDepartment() {
+    connection.query("SELECT * FROM employee_trackerDB.department", function (err, data) {
+     if (err) throw err 
+     console.table(data)
+       askQuestions()  
+        })
+        
+    }
+//function view all roles
+ function viewRole() {
+    connection.query("SELECT * FROM employee_trackerDB.role", function (err, data) {
+         if (err) throw err 
+         console.table(data)
+         askQuestions()      
+                })
+                
+    }
+//function view all employees
+function viewEmployees() {
+     connection.query("SELECT * FROM employee_trackerDB.employee", function (err, data) {
+        if (err) throw err 
+         console.table(data)
+         askQuestions()           
+                    })
+                    
+        }
+            
+        
