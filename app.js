@@ -69,7 +69,7 @@ function addRole() {
         })
          inquirer.prompt([
             {
-                name: "name",
+                name: "title",
                 type: "input",
                 message: "What is the name of the role you would like to add?"
             }, {
@@ -85,9 +85,8 @@ function addRole() {
         ]).then(function (response) {
             connection.query("INSERT INTO role SET ?", {
                 title: response.title,
-                // depname: response.depname,
                 salary: response.salary,
-                department_id: response.depId
+                department_id: response.depname
             }, function (err) {
                 if (err) throw err
                 askQuestions()
@@ -96,30 +95,34 @@ function addRole() {
 
     })
 }
-// function that lets user add new employee
-// function addEmployee() {
-//     inquirer.prompt([
-//         {
-//         name: "firstName",
-//         type: "input",
-//         message: "What is your first name?"
-//         },
-//         {
-//         name: "lastName",
-//         type: "input",
-//         message: "What is your last name?"
-//         },
-//         {
-//         name: "role",
-//         type: "input",
-//         message: "What is your role?"   
-//         },
-//         ]).then(function (answers) {
-//         connection.query("INSERT INTO department SET ?", { title: answers.name }, function (err) {
-//             if (err) throw err
-//             start()
-//         })
-//     })
+//function that lets user add new employees to the employee table
+function addEmployee() {
+    inquirer.prompt([
+        {
+        name: "firstName",
+        type: "input",
+        message: "What is your first name?"
+        },
+        {
+        name: "lastName",
+        type: "input",
+        message: "What is your last name?"
+        },
+        {
+        name: "role",
+        type: "input",
+        message: "What is your role?"   
+        },
+        ]).then(function (answers) {
+        connection.query("INSERT INTO employee SET ?", {
+            first_name: answers.firstName,
+            last_name: answers.lastName,
+            role_id: answers.role
+         }, function (err) {
+            if (err) throw err
+            askQuestions();
+        })
+    })
 
 
-// }
+}
