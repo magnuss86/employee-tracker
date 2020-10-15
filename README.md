@@ -53,3 +53,5 @@ GitHub Username: Magnuss86
 GitHub Link: https://github.com/magnuss86
 
 Email: magnus86@uw.edu
+
+https://drive.google.com/file/d/1XoidXr9y_aJMazwF-iROXtnyOIoUiIGb/view
